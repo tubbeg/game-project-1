@@ -1,4 +1,7 @@
 Tiny = require "tiny-ecs/tiny"
+local addMoveSys = require "systems/movePlayer"
+local addDrawSys = require "systems/drawPlayer"
+local addCtrlSys = require "systems/controlPlayer"
 
 local WIDTH = 800
 local HEIGHT = 600
@@ -34,38 +37,16 @@ For now
 ]]
 
 
-local function addDrawSystem(world)
-    local moveSystem = Tiny.processingSystem()
-    moveSystem.graphicSystem = true
-    moveSystem.filter = Tiny.requireAll("player", "position", "direction",  "image")
-    function moveSystem:process(e, dt)
-        love.graphics.draw(e.image, e.position.x, e.position.y)
-    end
-    Tiny.addSystem(world, moveSystem)
-end
-
-
-local function addMoveSystem(world)
-    local moveSystem = Tiny.processingSystem()
-    moveSystem.logicSystem = true
-    moveSystem.filter = Tiny.requireAll("player", "position", "direction")
-    function moveSystem:process(e, dt)
-        print("Here is my logic ECS system", dt)
-        print(e.direction)
-    end
-    Tiny.addSystem(world, moveSystem)
-end
-
-
 local function addSystems(world)
-    addMoveSystem(world)
-    addDrawSystem(world)
+    addMoveSys(world)
+    addDrawSys(world)
+    addCtrlSys(world)
 end
 
 
 local function addPlayerEntity(world)
     local position = {x=10,y=50}
-    local direction = {hello="there"}
+    local direction = {[1]="NONE",[2]="NONE"}
     local image = love.graphics.newImage("assets/banana.png")
     local entity = 
         {
@@ -85,17 +66,24 @@ function love.load()
     addPlayerEntity(w)
 end
 
+--[[
 function love.keypressed(key)
     for i,entity in ipairs(w.entities) do
         if entity.player then
-            if key == "a" then
-                if entity then
-                    entity.direction = "LEFT"
-                end
+            if key == "w" then
+                entity.direction = "UP"
+            elseif key == "a" then
+                entity.direction = "LEFT"
+            elseif key == "s" then
+                entity.direction = "DOWN"
+            elseif key == "d" then
+                entity.direction = "RIGHT"
+            else
+                entity.direction = {}
             end
         end
     end
-end
+end]]
 
 function love.update(dt) w:update(dt, logicSystem) end
 
