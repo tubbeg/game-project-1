@@ -27,8 +27,14 @@ function Board:update(dt)
 end
 
 
-function Board:movePlayer(position)
-    self.player:move(position)
+function Board:movePlayer(dirX, dirY)
+    if not dirX and not dirY then
+        return
+    end
+    if dirX == "DOWN" then
+    end
+    if dir  == "UP" then
+    end
 end
 
 
