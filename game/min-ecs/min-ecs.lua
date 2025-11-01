@@ -13,7 +13,9 @@ function Min:new()
     local ecs =
         {
             entities={},
+            remove={},
             systems={}
+
         }
     setmetatable(ecs, self)
     self.__index = self
@@ -64,11 +66,39 @@ end
 -- an entity in min-ecs is just a Lua table
 function Min:addEntity(entity) table.insert(self.entities, entity) end
 
+-- removes an entity from the list by adding it to a remove list
+-- the update function iterates through the remove list after each
+-- update
+function Min:removeEntity(entity)
+    table.insert(self.remove, entity)
+end
+
+local function tableContainsElement(t, element)
+    for _,v in pairs(t) do
+        if v == element then
+            return true
+        end
+    end
+    return false
+end
+
+local function removeEntities(world)
+    local newTable = {}
+    for _, entity in pairs(world.entities) do
+        if not tableContainsElement(world.remove, entity) then
+            table.insert(newTable, entity)
+        end
+    end
+    world.remove = {}
+    world.entities = newTable
+end
+
 -- iterates through the list of systems and executes each system (function)
 function Min:update(dt, filter)
     for i,system in ipairs(self.systems) do
         system(self, dt, filter)
     end
+    removeEntities(self)
 end
 
 return Min

@@ -49,7 +49,7 @@ local function moveSystem(world, dt, filter)
         if direction[2] == "DOWN" then
             e.position.y = e.position.y - 1
         end
-        clampPosition(e.position)
+        --clampPosition(e.position)
     end
 end
 
