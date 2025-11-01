@@ -1,10 +1,14 @@
-Tiny = require "tiny-ecs/tiny"
+Min = require "min-ecs/min-ecs"
 local addMoveSys = require "systems/movePlayer"
-local addDrawSys = require "systems/drawPlayer"
+local addDrawSys = require "systems/drawImage"
 local addCtrlSys = require "systems/controlPlayer"
 
 local WIDTH = 800
 local HEIGHT = 600
+
+local function defaultPosition()
+    return {x=WIDTH/2, y=HEIGHT/2}
+end
 
 Msg = "hello"
 List = {Msg,Msg,Msg}
@@ -12,9 +16,7 @@ for i,v in pairs(List) do
     print(v)
 end
 
-local w = Tiny.world()
-local logicSystem = Tiny.requireAll("logicSystem")
-local graphicSystem = Tiny.rejectAll("logicSystem")
+local minWorld = Min:new()
 
 --[[
 Idea for a game: survivorlike
@@ -45,46 +47,44 @@ end
 
 
 local function addPlayerEntity(world)
-    local position = {x=10,y=50}
+    local position = defaultPosition()
     local direction = {[1]="NONE",[2]="NONE"}
     local image = love.graphics.newImage("assets/banana.png")
-    local entity = 
+    local entity =
         {
             image=image,
             player=true,
             position=position,
-            direction=direction
+            direction=direction,
+            z = 0
         }
-    Tiny.addEntity(world, entity)
+    world:addEntity(entity)
 end
+
+
+local function addBoardEntity(world)
+    local position = {x=-1000,y=-1000}
+    local image = love.graphics.newImage("assets/background.png")
+    local entity =
+        {
+            image=image,
+            board=true,
+            position=position,
+            z = 100
+        }
+    world:addEntity(entity)
+end
+
 
 
 function love.load()
     love.window.setMode( WIDTH, HEIGHT)
     love.graphics.setDefaultFilter("nearest", "nearest")
-    addSystems(w)
-    addPlayerEntity(w)
+    addSystems(minWorld)
+    addPlayerEntity(minWorld)
+    addBoardEntity(minWorld)
 end
 
---[[
-function love.keypressed(key)
-    for i,entity in ipairs(w.entities) do
-        if entity.player then
-            if key == "w" then
-                entity.direction = "UP"
-            elseif key == "a" then
-                entity.direction = "LEFT"
-            elseif key == "s" then
-                entity.direction = "DOWN"
-            elseif key == "d" then
-                entity.direction = "RIGHT"
-            else
-                entity.direction = {}
-            end
-        end
-    end
-end]]
+function love.update(dt) minWorld:update(dt, "logic") end
 
-function love.update(dt) w:update(dt, logicSystem) end
-
-function love.draw() w:update(love.timer.getDelta(), graphicSystem) end
+function love.draw() minWorld:update(love.timer.getDelta(), "draw") end

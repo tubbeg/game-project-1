@@ -17,12 +17,17 @@ local function setDirection(player)
     end
 end
 
+
+local predicate = function (entity)
+    return entity.player and entity.direction
+end
+
+local function controlSystem(e, dt)
+    setDirection(e)
+end
+
 local function addControlSystem(world)
-    local moveSystem = Tiny.processingSystem()
-    moveSystem.logicSystem = true
-    moveSystem.filter = Tiny.requireAll("player", "position", "direction")
-    function moveSystem:process(e, dt) setDirection(e) end
-    Tiny.addSystem(world, moveSystem)
+    world:addForeachSystem(predicate, controlSystem, "logic")
 end
 
 
