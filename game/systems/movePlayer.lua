@@ -3,18 +3,19 @@
 -- TODO
 -- add these constants as entities maybe?
 -- less manual work is better
-local function clampPosition(position)
-    if position.y >= 0 then
-        position.y = 0
+local function clampBackgroundPosition(entity)
+    if not entity.board then return end
+    if entity.position.y >= 2000 then
+        entity.position.y = 2000
     end
-    if position.x >= 0 then
-        position.x = 0
+    if entity.position.x >= 2000 then
+        entity.position.x = 2000
     end
-    if position.x <= -1000 then
-        position.x = -1000
+    if entity.position.x <= -2000 then
+        entity.position.x = -2000
     end
-    if position.y <= -1000 then
-        position.y = -1000
+    if entity.position.y <= -2000 then
+        entity.position.y = -2000
     end
 end
 
@@ -49,7 +50,7 @@ local function moveSystem(world, dt, filter)
         if direction[2] == "DOWN" then
             e.position.y = e.position.y - 1
         end
-        --clampPosition(e.position)
+        clampBackgroundPosition(e)
     end
 end
 

@@ -1,5 +1,6 @@
 Min = require "min-ecs/min-ecs"
 local addMoveSys = require "systems/movePlayer"
+local addEnMoveSys = require "systems/moveEnemy"
 local addDrawSys = require "systems/drawImage"
 local addCtrlSys = require "systems/controlPlayer"
 local spawnE = require "systems/spawnEnemy"
@@ -45,6 +46,7 @@ local function addSystems(world)
     addDrawSys(world)
     addCtrlSys(world)
     spawnE(world)
+    addEnMoveSys(world)
 end
 
 local function addImagesEntity(world)

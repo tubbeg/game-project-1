@@ -12,7 +12,7 @@ local function positionIsNotNear(pos1, pos2)
     local xDiff = pos1.x - pos2.x
     local yDiff = pos1.y - pos2.y
     local dist = math.sqrt(math.pow(xDiff, 2) + math.pow(yDiff, 2))
-    return dist > 100
+    return dist > 500
 end
 
 -- this should not be a constant
@@ -21,8 +21,8 @@ end
 local function generateRandomPosition(playerPos)
     local position = {x=playerPos.x,y=playerPos.y}
     while not positionIsNotNear(position, playerPos) do
-        position.x = playerPos.x + math.random(-150, 150)
-        position.y = playerPos.y + math.random(-150, 150)
+        position.x = playerPos.x + math.random(-550, 550)
+        position.y = playerPos.y + math.random(-550, 550)
     end
     return position
 end
