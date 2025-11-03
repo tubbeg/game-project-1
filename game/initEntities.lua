@@ -45,7 +45,8 @@ function InitEntities.addPlayerEntity(world)
             player=true,
             position=position,
             direction=direction,
-            z = 0
+            z = 0,
+            health = 100
         }
     world:addEntity(entity)
 end
