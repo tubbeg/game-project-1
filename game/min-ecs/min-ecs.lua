@@ -82,6 +82,8 @@ local function tableContainsElement(t, element)
     return false
 end
 
+-- "private" helper functional
+-- removes all entities in the list (table)
 local function removeEntities(world)
     local newTable = {}
     for _, entity in pairs(world.entities) do

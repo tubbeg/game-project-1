@@ -5,6 +5,7 @@ local addDrawSys = require "systems/drawImage"
 local addCtrlSys = require "systems/controlPlayer"
 local spawnE = require "systems/spawnEnemy"
 local lookAt = require "systems/lookAtPlayer"
+local clCam = require "systems/clampCamera"
 local initEnts = require "initEntities"
 
 Msg = "hello"
@@ -44,6 +45,7 @@ local function addSystems(world)
     spawnE(world)
     addEnMoveSys(world)
     lookAt(world)
+    clCam(world)
 end
 
 
