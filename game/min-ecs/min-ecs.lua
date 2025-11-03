@@ -94,6 +94,7 @@ local function removeEntities(world)
 end
 
 -- iterates through the list of systems and executes each system (function)
+-- it will also remove any entity on the remove list after execution
 function Min:update(dt, filter)
     for i,system in ipairs(self.systems) do
         system(self, dt, filter)

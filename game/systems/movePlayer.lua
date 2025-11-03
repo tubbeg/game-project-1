@@ -3,24 +3,23 @@
 -- TODO
 -- add these constants as entities maybe?
 -- less manual work is better
-local function clampBackgroundPosition(entity)
-    if not entity.board then return end
-    if entity.position.y >= 2000 then
-        entity.position.y = 2000
+local function clamp(entity)
+    if entity.position.y >= 500 then
+        entity.position.y = 500
     end
-    if entity.position.x >= 2000 then
-        entity.position.x = 2000
+    if entity.position.x >= 500 then
+        entity.position.x = 500
     end
-    if entity.position.x <= -2000 then
-        entity.position.x = -2000
+    if entity.position.x <= -1000 then
+        entity.position.x = -1000
     end
-    if entity.position.y <= -2000 then
-        entity.position.y = -2000
+    if entity.position.y <= -1000 then
+        entity.position.y = -1000
     end
 end
 
 local predicate = function (entity)
-    return entity.position and not entity.player
+    return entity.position and entity.player
 end
 
 local function getPlayerEntity(world)
@@ -32,25 +31,30 @@ local getDirection = function (world)
     return getPlayerEntity(world).direction
 end
 
--- the player isn't actually moving here, everything else is
+
+local function calcPosition(direction, entity)
+    local position = {x=entity.position.x, y=entity.position.y}
+    if direction[1] == "LEFT" then
+        position.x = position.x - 1
+    end
+    if direction[1] == "RIGHT" then
+        position.x = position.x + 1
+    end
+    if direction[2] == "DOWN" then
+        position.y = position.y + 1
+    end
+    if direction[2] == "UP" then
+        position.y = position.y - 1
+    end
+    return position
+end
+
 local function moveSystem(world, dt, filter)
     if filter ~= "logic" then return end
     local ents = world:query(predicate)
     local direction = getDirection(world)
     for _,e in pairs(ents) do
-        if direction[1] == "LEFT" then
-            e.position.x = e.position.x + 1
-        end
-        if direction[1] == "RIGHT" then
-            e.position.x = e.position.x - 1
-        end
-        if direction[2] == "UP" then
-            e.position.y = e.position.y + 1
-        end
-        if direction[2] == "DOWN" then
-            e.position.y = e.position.y - 1
-        end
-        clampBackgroundPosition(e)
+        e.position = calcPosition(direction, e)
     end
 end
 
