@@ -7,16 +7,11 @@ local function linesOverlap(lineStart1, lineEnd1, lineStart2, lineEnd2)
         lineStart1 + lineEnd1 > lineStart2
 end
 
-
--- right now the hitboxes are way too big
--- aabb collision is pretty simple and it works really well, but
--- if I need something complex then this won't do
+-- i might replace this with a proper 3rd-party physics library later
 local function aabb(player, enemy)
-    local pW, pH = player.image:getDimensions()
-    local eW, eH = enemy.image:getDimensions()
     return
-        linesOverlap(player.position.x, pW, enemy.position.x, eW) and
-        linesOverlap(player.position.y, pH, enemy.position.y, eH)
+        linesOverlap(player.position.x, player.hitbox.w, enemy.position.x, enemy.hitbox.w) and
+        linesOverlap(player.position.y, player.hitbox.h, enemy.position.y, enemy.hitbox.h)
 end
 
 local predicate = function (entity)
@@ -32,18 +27,31 @@ local function getPlayerEntity(world)
     return ents[1]
 end
 
--- should i run this system at certain intervals, or
--- should i give the player some invincibility afterward
--- collision?
+local function updateTimer(playerEntity, dt)
+    playerEntity.collisionTimer.current = playerEntity.collisionTimer.current + dt
+    if playerEntity.collisionTimer.current > playerEntity.collisionTimer.limit then
+        playerEntity.collisionTimer.current = 0
+    end
+end
+
+local function isTimeForCollision(playerEntity)
+    return playerEntity.collisionTimer.current == 0
+end
+
+-- triggers at intervals
 local function collisionSystem(world, dt, filter)
     if filter ~= "logic" then return end
     local ents = world:query(predicate)
     local player = getPlayerEntity(world)
-    for _,e in pairs(ents) do
-        if aabb(player, e) then
-            player.health = player.health - 1
-            if player.health < 0 then
-                print("player is dead :(")
+    updateTimer(player, dt)
+    if isTimeForCollision(player) then
+        for _,e in pairs(ents) do
+            if aabb(player, e) then
+                print(player.health, "player health")
+                player.health = player.health - 1
+                if player.health < 0 then
+                    print("player is dead :(")
+                end
             end
         end
     end

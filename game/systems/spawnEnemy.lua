@@ -45,8 +45,10 @@ local function createEnemyEntity(world)
             enemy = true,
             position = calculatePosition(world),
             image = getImagesEntity(world).images.banana,
-            z = 10
+            z = 10,
         }
+    local w,h = entity.image:getDimensions()
+    entity.hitbox = {w=w*0.5,h=h*0.5}
     print("spawning enemy at", entity.position)
     world:addEntity(entity)
 end

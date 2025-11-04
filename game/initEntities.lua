@@ -46,7 +46,9 @@ function InitEntities.addPlayerEntity(world)
             position=position,
             direction=direction,
             z = 0,
-            health = 100
+            health = 100,
+            collisionTimer = {limit=0.5, current=0},
+            hitbox = {w=w*0.5,h=h*0.5}
         }
     world:addEntity(entity)
 end
