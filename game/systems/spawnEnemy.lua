@@ -1,12 +1,8 @@
 
+local Ut = require "systems/utility"
+
 -- replace this with a system later
 local dummyDifficulty = 2
-
-
-local function getPlayerEntity(world)
-    local entities = world:query(function(entity) return entity.player end)
-    return entities[1]
-end
 
 local function positionIsNotNear(pos1, pos2)
     local xDiff = pos1.x - pos2.x
@@ -28,7 +24,7 @@ local function generateRandomPosition(playerPos)
 end
 
 local function calculatePosition(world)
-    local position = getPlayerEntity(world).position
+    local position = Ut.getPlayerEntity(world).position
     return generateRandomPosition(position)
 end
 
@@ -55,12 +51,15 @@ end
 
 local predicate = function (entity) return entity.timer end
 
+
 local function addSpawnSystem(world)
     local function drawSystem(e, dt)
-        e.timer.current = e.timer.current + dt
-        if e.timer.current > e.timer.limit(dummyDifficulty) then
-            e.timer.current = 0
-            createEnemyEntity(world)
+        if Ut.playerIsNotDead(world) then
+            e.timer.current = e.timer.current + dt
+            if e.timer.current > e.timer.limit(dummyDifficulty) then
+                e.timer.current = 0
+                createEnemyEntity(world)
+            end
         end
     end
     world:addForeachSystem(predicate, drawSystem, "logic")

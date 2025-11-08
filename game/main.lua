@@ -9,11 +9,9 @@ local clCam = require "systems/clampCamera"
 local collPl = require "systems/playerCollision"
 local initEnts = require "initEntities"
 
-Msg = "hello"
-List = {Msg,Msg,Msg}
-for i,v in pairs(List) do
-    print(v)
-end
+local hello = "hello"
+
+
 
 local minWorld = Min:new()
 

@@ -1,5 +1,7 @@
 
 
+local Ut = require "systems/utility"
+
 
 local function linesOverlap(lineStart1, lineEnd1, lineStart2, lineEnd2)
     return
@@ -14,18 +16,6 @@ local function aabb(player, enemy)
         linesOverlap(player.position.y, player.hitbox.h, enemy.position.y, enemy.hitbox.h)
 end
 
-local predicate = function (entity)
-    return entity.enemy and entity.position and entity.image
-end
-
-local playerPredicate = function (entity)
-    return entity.player and entity.position and entity.image
-end
-
-local function getPlayerEntity(world)
-    local ents = world:query(playerPredicate)
-    return ents[1]
-end
 
 local function updateTimer(playerEntity, dt)
     playerEntity.collisionTimer.current = playerEntity.collisionTimer.current + dt
@@ -41,8 +31,8 @@ end
 -- triggers at intervals
 local function collisionSystem(world, dt, filter)
     if filter ~= "logic" then return end
-    local ents = world:query(predicate)
-    local player = getPlayerEntity(world)
+    local ents = Ut.getEnemyEntities(world)
+    local player = Ut.getPlayerEntity(world)
     updateTimer(player, dt)
     if isTimeForCollision(player) then
         for _,e in pairs(ents) do

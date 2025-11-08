@@ -1,4 +1,5 @@
 
+local Ut = require "systems/utility"
 
 local function setDirection(player)
     player.direction[1] = "NONE"
@@ -17,17 +18,12 @@ local function setDirection(player)
     end
 end
 
-
-local predicate = function (entity)
-    return entity.player and entity.direction
-end
-
 local function controlSystem(e, dt)
     setDirection(e)
 end
 
 local function addControlSystem(world)
-    world:addForeachSystem(predicate, controlSystem, "logic")
+    world:addForeachSystem(Ut.playerPredicate, controlSystem, "logic")
 end
 
 
